@@ -24,9 +24,11 @@ const internalAuthSecretApiConfig = {
   } satisfies Record<keyof SendAuthSecretApi, RemoteApiPropertyType>,
 };
 
+// Chromium: MV3 service worker. Firefox: background event page.
 const isBackgroundServiceWorker =
   typeof globalThis === 'object' &&
-  globalThis.constructor.name === 'ServiceWorkerGlobalScope';
+  (globalThis.constructor.name === 'ServiceWorkerGlobalScope' ||
+    globalThis.location?.href.includes('_generated_background') === true);
 
 export const consumeInternalAuthSecretApi: ConsumeInternalAuthSecretApi = ({
   logger,

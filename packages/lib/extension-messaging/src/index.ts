@@ -30,7 +30,12 @@ export type BaseChannel = { baseChannel: ChannelName };
 
 type ShutdownWithMessenger = Shutdown & { messenger: Messenger };
 
-const isInBackgroundProcess = typeof window === 'undefined';
+// Chromium runs the background as a service worker (no `window`); Firefox runs
+// it as an event page, which has one. Mirrors isBackgroundProcess() in
+// @lace-lib/util, inlined to keep this module free of an import cycle.
+const isInBackgroundProcess =
+  typeof window === 'undefined' ||
+  window.location.href.includes('_generated_background');
 
 export const getBackgroundMessenger = (() => {
   let backgroundMessenger: BackgroundMessenger | null = null;

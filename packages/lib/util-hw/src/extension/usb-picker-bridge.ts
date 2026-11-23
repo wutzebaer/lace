@@ -67,6 +67,25 @@ export const createUsbPickerExtensionBridge = (
   pickerPageUrl: string,
 ): RequestHWConnection => {
   return async options => {
+    // No WebUSB (Firefox): there is no device chooser to show. Vendors with
+    // their own transport declare a fallback descriptor; the rest cannot be
+    // reached from this browser at all.
+    if (typeof navigator === 'undefined' || !('usb' in navigator)) {
+      const fallback = options.find(
+        option => option.usbFallbackDevice,
+      )?.usbFallbackDevice;
+      if (!fallback) {
+        // 'NotImplementedError' is what classifyHardwareError maps to the
+        // 'not-supported' message.
+        const error = new Error(
+          'This browser has no WebUSB support for the selected device',
+        );
+        error.name = 'NotImplementedError';
+        throw error;
+      }
+      return fallback;
+    }
+
     const filters = options.flatMap(option => option.usbFilters ?? []);
     const labels = getLabels();
     // webextension-polyfill is a CJS module. Metro with experimentalImportSupport

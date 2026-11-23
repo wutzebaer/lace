@@ -28,6 +28,40 @@ const dedupeOrigins = urls =>
   // Skip blanks: provider URLs default to empty (see ADR 40); new URL('') throws.
   [...new Set(urls.filter(Boolean).map(u => new URL(u).origin))].join(' ');
 
+/**
+ * Firefox (Gecko) manifest variant. Firefox MV3 has no extension service
+ * workers, no side panel API and no offscreen documents: the background runs
+ * as an event page, and the toolbar action falls back to opening a tab
+ * (see src/sw-script/action-click-handler.ts).
+ */
+const applyFirefoxManifest = manifest => {
+  manifest.background = { scripts: ['./js/sw/sw-script.js'] };
+  delete manifest.side_panel;
+  delete manifest.key;
+  // Firefox equivalent of the Chromium side panel. The toolbar action toggles
+  // it from src/sw-script/load.ts.
+  manifest.sidebar_action = {
+    default_panel: 'expo/index.html',
+    default_title: manifest.name,
+    default_icon: manifest.icons,
+    open_at_install: false,
+  };
+  // `windows` is not a permission in Firefox: the windows API needs none.
+  const chromiumOnlyPermissions = ['sidePanel', 'offscreen', 'windows'];
+  manifest.permissions = manifest.permissions.filter(
+    permission => !chromiumOnlyPermissions.includes(permission),
+  );
+  manifest.browser_specific_settings = {
+    gecko: {
+      id:
+        process.env.FIREFOX_EXTENSION_ID ||
+        'lace-firefox-spike@example.invalid',
+      // content_scripts[].world = "MAIN" needs Firefox 128+
+      strict_min_version: '128.0',
+    },
+  };
+};
+
 const transformManifest = (content, mode) => {
   const path = require('node:path');
 
@@ -193,6 +227,7 @@ const transformManifest = (content, mode) => {
     } else {
       delete manifest.key;
     }
+    if (process.env.BROWSER === 'firefox') applyFirefoxManifest(manifest);
     return JSON.stringify(manifest);
   } catch (error) {
     throw new Error(error);

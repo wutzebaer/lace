@@ -6,8 +6,12 @@ const { withMaybeSentry } = require('../webpack-utils');
 
 const { outputDirectory } = require('./common.webpack.config');
 
+// Firefox runs the background as an event page (a document), where the
+// webworker chunk loader's importScripts() does not exist.
+const isFirefox = process.env.BROWSER === 'firefox';
+
 module.exports = {
-  target: 'webworker',
+  target: isFirefox ? 'web' : 'webworker',
   entry: {
     'sw-script': withMaybeSentry(
       path.join(__dirname, '..', '..', 'src/sw-script/index.ts'),
@@ -15,7 +19,7 @@ module.exports = {
   },
   output: {
     path: path.join(outputDirectory, 'js', 'sw'),
-    publicPath: process.env.WEBPACK_PUBLIC_PATH,
+    publicPath: isFirefox ? '/js/sw/' : process.env.WEBPACK_PUBLIC_PATH,
   },
   module: {
     rules: [

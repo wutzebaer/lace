@@ -29,7 +29,12 @@ module.exports = {
   },
   output: {
     // required for content scripts
-    publicPath: `chrome-extension://${process.env.EXTENSION_ID}/js/`,
+    // Firefox assigns a random per-install moz-extension:// UUID, so the
+    // origin cannot be baked in at build time.
+    publicPath:
+      process.env.BROWSER === 'firefox'
+        ? '/js/'
+        : `chrome-extension://${process.env.EXTENSION_ID}/js/`,
   },
   plugins: [
     new CopyPlugin({

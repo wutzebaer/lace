@@ -16,6 +16,7 @@ import type {
   HardwareDeviceBleFilter,
   HardwareDeviceUsbFilter,
   HardwareIntegrationId,
+  UsbDeviceDescriptor,
 } from '@lace-lib/util-hw';
 import type { UICustomisation } from '@lace-lib/util-render';
 import type { BlockchainName } from '@lace-lib/util-store';
@@ -133,6 +134,8 @@ export interface HardwareOnboardingOption {
   isHwDevice: true;
   device: HardwareWalletDeviceMetadata;
   usbFilters?: HardwareDeviceUsbFilter[];
+  /** See RequestHWConnectionOption.usbFallbackDevice in @lace-lib/util-hw. */
+  usbFallbackDevice?: UsbDeviceDescriptor;
   bleFilters?: HardwareDeviceBleFilter[];
   /** If provided, show derivation type selector in setup step. */
   derivationTypes?: DerivationType[];

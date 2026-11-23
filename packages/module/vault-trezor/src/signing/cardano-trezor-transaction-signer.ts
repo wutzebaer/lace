@@ -17,6 +17,7 @@ import { dummyLogger } from 'ts-log';
 
 import { TREZOR_MANIFEST } from '../const';
 
+import { initTrezorConnectWeb } from '../addons/trezor-connect-init-web';
 import type { Cardano } from '@cardano-sdk/core';
 import type { Bip32PublicKeyHex } from '@cardano-sdk/crypto';
 import type { GroupedAddress } from '@cardano-sdk/key-management';
@@ -62,7 +63,7 @@ export class CardanoTrezorTransactionSigner
         : {}),
     };
 
-    await TrezorKeyAgent.initializeTrezorTransport(trezorConfig);
+    await initTrezorConnectWeb(trezorConfig);
 
     try {
       const keyAgent = new TrezorKeyAgent(

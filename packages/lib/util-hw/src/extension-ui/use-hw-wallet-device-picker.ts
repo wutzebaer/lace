@@ -107,6 +107,7 @@ export const useHwWalletDevicePicker = <
         try {
           const requestOptions = optionsToScan.map(option => ({
             usbFilters: option.usbFilters,
+            usbFallbackDevice: option.usbFallbackDevice,
             bleFilters: option.bleFilters,
           }));
           const selectedDeviceDescriptor = await requestHWConnection(

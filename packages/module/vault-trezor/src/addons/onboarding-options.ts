@@ -1,6 +1,7 @@
 import { WalletType } from '@lace-contract/wallet-repo';
 
 import {
+  TREZOR_BRIDGE_PLACEHOLDER_SERIAL,
   TREZOR_ONBOARDING_OPTION_ID,
   TREZOR_USB_PRODUCT_ID,
   TREZOR_USB_VENDOR_ID,
@@ -27,6 +28,12 @@ const loadOnboardingOptions: ContextualLaceInit<
     usbFilters: [
       { vendorId: TREZOR_USB_VENDOR_ID, productId: TREZOR_USB_PRODUCT_ID },
     ],
+    usbFallbackDevice: {
+      kind: 'usb',
+      vendorId: TREZOR_USB_VENDOR_ID,
+      productId: TREZOR_USB_PRODUCT_ID,
+      serialNumber: TREZOR_BRIDGE_PLACEHOLDER_SERIAL,
+    },
     derivationTypes: ['ICARUS', 'ICARUS_TREZOR', 'LEDGER'],
   },
 ];

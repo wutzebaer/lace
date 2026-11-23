@@ -19,6 +19,7 @@ import {
 } from '../util';
 
 import { handleActionClick } from './action-click-handler';
+import { hasFirefoxSidebarAction } from './firefox-sidebar-action';
 import { createRemoteStore } from './create-remote-store';
 import { exposeAPIs } from './expose-apis';
 
@@ -81,7 +82,10 @@ void refreshFromStorage().catch((error: unknown) => {
   logger.error('Failed to read defaultOpenMode from storage', error);
 });
 
+// On Firefox the toolbar action is handled by ./firefox-sidebar-action.ts,
+// registered from ./index.ts before the first await.
 chrome.action.onClicked.addListener(tab => {
+  if (hasFirefoxSidebarAction()) return;
   void (async () => {
     // Re-read on every click so popup-side changes propagate without a
     // chrome.storage.onChanged subscription (which would keep the SW alive).

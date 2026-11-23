@@ -2,6 +2,7 @@ import type {
   DerivationType,
   HardwareDeviceBleFilter,
   HardwareDeviceUsbFilter,
+  UsbDeviceDescriptor,
 } from '../types';
 import type { HardwareIntegrationId } from '../value-objects/hardware-integration-id.vo';
 import type { BlockchainName } from '@lace-lib/util-store';
@@ -28,6 +29,8 @@ export interface HardwareWalletPickerOption {
   isHwDevice: true;
   device: HardwareWalletDeviceMetadata;
   usbFilters?: HardwareDeviceUsbFilter[];
+  /** See RequestHWConnectionOption.usbFallbackDevice. */
+  usbFallbackDevice?: UsbDeviceDescriptor;
   bleFilters?: HardwareDeviceBleFilter[];
   derivationTypes?: DerivationType[];
   /** Air-gapped device: the picker has no wired transport to scan for it. */

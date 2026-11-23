@@ -11,6 +11,7 @@
     "build:dev:ui": "expo export --no-minify --dump-sourcemap --output-dir dist/expo && tsx scripts/patch-expo-html.ts",
     "build:e2e": "run-s build:e2e:prepare-env build:e2e:ui build:e2e:app build:e2e:sw",
     "build:e2e:app": "LACE_E2E_FEATURE_FLAGS=1 tsx scripts/run-with-env.ts webpack/.env.e2e webpack -c webpack/dev/app.webpack.config.js",
+    "build:e2e:firefox": "BROWSER=firefox run-s build:e2e:app build:e2e:sw",
     "build:e2e:prepare-env": "tsx scripts/run-with-env.ts webpack/.env.e2e tsx scripts/prepare-expo-env.ts webpack .",
     "build:e2e:sw": "LACE_E2E_FEATURE_FLAGS=1 tsx scripts/run-with-env.ts webpack/.env.e2e webpack -c webpack/dev/serviceworker.webpack.config.js",
     "build:e2e:ui": "LACE_E2E_FEATURE_FLAGS=1 expo export --clear --no-minify --dump-sourcemap --output-dir dist/expo && tsx scripts/patch-expo-html.ts",

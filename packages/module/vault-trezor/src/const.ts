@@ -18,6 +18,11 @@ export const TREZOR_BITCOIN_ONBOARDING_OPTION_ID =
 export const TREZOR_USB_VENDOR_ID = 0x12_09;
 export const TREZOR_USB_PRODUCT_ID = 0x53_c1;
 export const TREZOR_MOBILE_PLACEHOLDER_SERIAL = 'trezor-mobile';
+/**
+ * Serial of the descriptor used when the browser has no WebUSB (Firefox) and
+ * the device is reached through Trezor Suite / Trezor Bridge instead.
+ */
+export const TREZOR_BRIDGE_PLACEHOLDER_SERIAL = 'trezor-bridge';
 
 export const TREZOR_MANIFEST = {
   email: 'lace@iohk.io',

@@ -5,7 +5,11 @@ import { runtime } from 'webextension-polyfill';
 import { logger } from '../util/logger';
 
 import { createIsConnectionAuthorized } from './authorize-connection';
+import { registerFirefoxSidebarToggle } from './firefox-sidebar-action';
 import { restrictStorageToTrustedContexts } from './storage-access';
+
+// Firefox: must be registered before the first await (see the module).
+registerFirefoxSidebarToggle(logger);
 
 // Stored state is for extension contexts only (./storage-access.ts).
 void restrictStorageToTrustedContexts({

@@ -1,8 +1,6 @@
-import { TrezorKeyAgent } from '@cardano-sdk/hardware-trezor';
-import { CommunicationType } from '@cardano-sdk/key-management';
 import TrezorConnect from '@trezor/connect-web';
 
-import { TREZOR_MANIFEST } from '../const';
+import { initTrezorConnectWeb } from './trezor-connect-init-web';
 
 import type { TrezorBitcoinConnect } from '../trezor-bitcoin-connect';
 
@@ -16,10 +14,6 @@ import type { TrezorBitcoinConnect } from '../trezor-bitcoin-connect';
  */
 export const getTrezorBitcoinConnectWeb =
   async (): Promise<TrezorBitcoinConnect> => {
-    await TrezorKeyAgent.initializeTrezorTransport({
-      communicationType: CommunicationType.Web,
-      manifest: TREZOR_MANIFEST,
-      lazyLoad: true,
-    });
+    await initTrezorConnectWeb();
     return TrezorConnect;
   };

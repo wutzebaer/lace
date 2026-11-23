@@ -68,6 +68,12 @@ export interface AttemptCreateHardwareWalletPayload {
  */
 export interface RequestHWConnectionOption {
   usbFilters?: HardwareDeviceUsbFilter[];
+  /**
+   * Descriptor to use when the host browser has no WebUSB (Firefox) but the
+   * vendor reaches the device through its own transport, e.g. Trezor Suite /
+   * Trezor Bridge. Absent for vendors that need WebUSB or WebHID (Ledger).
+   */
+  usbFallbackDevice?: UsbDeviceDescriptor;
   bleFilters?: HardwareDeviceBleFilter[];
 }
 

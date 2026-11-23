@@ -3,9 +3,11 @@ import { CommunicationType, KeyPurpose } from '@cardano-sdk/key-management';
 
 import { makeBitcoinHwAccountConnector } from '../bitcoin/hw-account-connector';
 import { cardanoAccountsFromXpub } from '../cardano-accounts-from-xpub';
-import { TREZOR_MANIFEST } from '../const';
-
 import { getTrezorBitcoinConnectWeb } from './trezor-bitcoin-connect-web';
+import {
+  initTrezorConnectWeb,
+  trezorFirefoxDebugLog,
+} from './trezor-connect-init-web';
 
 import type { AvailableAddons } from '..';
 import type { ContextualLaceInit } from '@lace-contract/module';
@@ -18,17 +20,24 @@ const getCardanoXpub = async (
   accountIndex: number,
   derivationType?: DerivationType,
 ) => {
-  await TrezorKeyAgent.initializeTrezorTransport({
-    communicationType: CommunicationType.Web,
-    manifest: TREZOR_MANIFEST,
-    lazyLoad: true,
-  });
-  return TrezorKeyAgent.getXpub({
+  await initTrezorConnectWeb();
+  trezorFirefoxDebugLog('requesting Cardano account key', {
     accountIndex,
-    communicationType: CommunicationType.Web,
-    purpose: KeyPurpose.STANDARD,
     derivationType,
   });
+  try {
+    const xpub = await TrezorKeyAgent.getXpub({
+      accountIndex,
+      communicationType: CommunicationType.Web,
+      purpose: KeyPurpose.STANDARD,
+      derivationType,
+    });
+    trezorFirefoxDebugLog('received Cardano account key');
+    return xpub;
+  } catch (error) {
+    trezorFirefoxDebugLog('Cardano account key request failed', error);
+    throw error;
+  }
 };
 
 const loadHwAccountConnector: ContextualLaceInit<
